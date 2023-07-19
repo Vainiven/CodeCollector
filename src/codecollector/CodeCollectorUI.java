@@ -25,6 +25,10 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 public class CodeCollectorUI extends JFrame {
+	/**
+	 * @author Vainiven - https://github.com/Vainiven
+	 */
+	private static final long serialVersionUID = -8193408663420970170L;
 	private File sourceDirectory;
 	private File outputFile;
 	private JLabel sourceLabel;
