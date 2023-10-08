@@ -25,9 +25,6 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 public class CodeCollectorUI extends JFrame {
-	/**
-	 * @author Vainiven - https://github.com/Vainiven
-	 */
 	private static final long serialVersionUID = -8193408663420970170L;
 	private File sourceDirectory;
 	private File outputFile;
@@ -77,6 +74,11 @@ public class CodeCollectorUI extends JFrame {
 		add(filesLabel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(500, 200);
+
+		// Set default output file to user's desktop with filename "CodeCollector.txt"
+		String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
+		outputFile = new File(desktopPath, "CodeCollector.txt");
+		outputLabel.setText("Output File: " + outputFile.getAbsolutePath());
 	}
 
 	private void selectSourceDirectory(ActionEvent e) {
@@ -93,6 +95,8 @@ public class CodeCollectorUI extends JFrame {
 	private void selectOutputFile(ActionEvent e) {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		// Set default file name
+		chooser.setSelectedFile(outputFile);
 		int returnVal = chooser.showSaveDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			outputFile = chooser.getSelectedFile();
@@ -119,8 +123,7 @@ public class CodeCollectorUI extends JFrame {
 				AtomicLong classFiles = new AtomicLong();
 
 				long totalFiles = Files.walk(sourceDirectory.toPath()).filter(Files::isRegularFile)
-						.filter(path -> path.toString().endsWith(".java") || path.toString().endsWith(".class"))
-						.peek(path -> {
+						.filter(path -> path.toString().endsWith(".java")).peek(path -> {
 							if (path.toString().endsWith(".java")) {
 								javaFiles.incrementAndGet();
 							} else {
@@ -131,8 +134,7 @@ public class CodeCollectorUI extends JFrame {
 				long[] processedFiles = { 0 };
 
 				Files.walk(sourceDirectory.toPath()).filter(Files::isRegularFile)
-						.filter(path -> path.toString().endsWith(".java") || path.toString().endsWith(".class"))
-						.forEach(path -> {
+						.filter(path -> path.toString().endsWith(".java")).forEach(path -> {
 							try {
 								byte[] bytes = Files.readAllBytes(path);
 								writer.write(bytes);
